@@ -35,11 +35,16 @@ This skill owns: vertical strategy, service architecture, bundle design, build p
 |-|-|
 | Market research / pain validation | `/market-pain` (required prerequisite) |
 | Service packaging / pricing tiers | `/ai-service-designer` |
-| Copy for sales materials | `/storybrand-copy` |
-| Funnel design | `/funnel-architect` |
-| Email sequences | `/email-sequence` |
-| Ad campaigns | `/google-ads-optimize`, `/facebook-ads-optimizer` |
-| UX review of demos | `/ux-audit` |
+
+**Companion skills (ship in later weeks of the toolkit — see [README](../../README.md) for the roadmap):**
+
+| Need | Companion skill | Ships |
+|-|-|-|
+| Copy for sales materials | dedicated copywriting skill | Week 3 |
+| Email sequences | email-sequence skill | Week 3 |
+| Funnel design | funnel-architect skill | Week 5 |
+| UX review of demos | ux-audit skill | Week 5 |
+| Ad campaigns | google-ads-optimize + facebook-ads-optimizer skills | Week 6 |
 
 ## Phase Status Table (track in output file)
 
@@ -220,7 +225,7 @@ Define distinct products from validated pain. **Requires Phase 2 (integration) c
 ## Phase 11: Validation Design
 
 1. How to test demand before full build (demo calls, landing page, letters of intent, Loom videos)
-2. Outreach strategy: who to contact, what channel, what script (delegate copy to `/storybrand-copy`)
+2. Outreach strategy: who to contact, what channel, what script (copy work delegated to the Week 3 copywriting skill)
 3. Success metrics per test (calls booked, demo completion, willingness to pay)
 4. **Pricing progression** — ramp methodology to discover price through early customers:
    - Start FREE for first 5 customers (buy testimonials and reps, not revenue)

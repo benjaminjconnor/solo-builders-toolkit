@@ -123,7 +123,7 @@ Q3. Brand voice + compliance?
 
 Q4. Follow-up vs cold-outreach?
   Follow-up on existing conversations     -> High-trust task, LLM fits
-  Cold outreach                           -> See `/linkedin-optimizer` or similar;
+  Cold outreach                           -> Delegate to the linkedin-optimizer skill (Week 4);
                                              avoid mass automated cold email —
                                              deliverability + ethics both collapse
 ```
@@ -169,13 +169,13 @@ Q4. Evaluation cadence?
 
 **Opportunity category:** 6 — Email sequences.
 
-**Cross-link:** `/email-sequence` skill owns this. ai-service-designer maps it to a service shape; `/email-sequence` designs the content.
+**Cross-link:** the email-sequence skill (Week 3) owns this. ai-service-designer maps it to a service shape; the email-sequence skill designs the content.
 
 ```
 Q1. What's missing?
-  No welcome sequence                 -> Build welcome arc (cross-link to email-sequence)
+  No welcome sequence                 -> Build welcome arc (delegate to Week 3 email-sequence skill)
   Broadcasts but no automation        -> Add nurture + segmentation
-  Automation exists but not working   -> Audit before rebuild (cross-link to email-sequence audit)
+  Automation exists but not working   -> Audit before rebuild (delegate to Week 3 email-sequence skill)
 
 Q2. Platform?
   Brevo / Mailchimp / Klaviyo         -> Any major platform fits
@@ -190,7 +190,7 @@ Q3. List size + hygiene?
 ```
 
 **Service shape:** Mid setup + low monthly.
-**Delivery overlap:** `/email-sequence` for content and architecture, ai-service-designer for the service package + pricing + runbook.
+**Delivery overlap:** the email-sequence skill (Week 3) handles content and architecture; ai-service-designer handles the service package + pricing + runbook.
 
 ---
 
@@ -344,7 +344,7 @@ Cautious tree. Easy to get wrong.
 
 ```
 Q1. Target audience + scale?
-  Small named top-100 outreach list    -> Cross-link `/linkedin-optimizer`; manual-assisted
+  Small named top-100 outreach list    -> Delegate to Week 4 linkedin-optimizer skill; manual-assisted
   Existing inbound contacts            -> Follow-up (Tree 4)
   Cold mass-email                       -> Refuse or re-shape; deliverability + ethics collapse
 

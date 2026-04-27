@@ -482,6 +482,8 @@ If any of those miss, the run is not complete. Fix the gap, re-run the affected 
 - `/market-pain` — Stage 1 dispatch target. Required prerequisite.
 - `/product-strategy` — Stage 2 dispatch target. Required prerequisite.
 - `/ai-service-designer` — Stage 3 dispatch target. Required prerequisite.
-- `/storybrand-copy` — post-GO, for service-page copy.
-- `/funnel-architect` — post-GO, for the sales funnel.
-- `/pm` — post-GO, to manage the build plan execution.
+
+**Post-GO companion skills (ship in later weeks of the toolkit — see [README](../../README.md) for the roadmap):**
+
+- copywriting skill (Week 3) — for service-page copy.
+- funnel-architect skill (Week 5) — for the sales funnel.

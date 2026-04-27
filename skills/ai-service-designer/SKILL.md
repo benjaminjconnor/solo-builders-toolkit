@@ -24,19 +24,19 @@ Load reference files on demand — don't load them all upfront.
 
 This skill owns: AI opportunity identification, service packaging, scope definition, pricing-model selection, vendor/tech-stack decisions, risk assessment, human-in-the-loop design, and productisation of custom work.
 
-**Out of scope — run these companions separately if available:**
+**Out of scope — these companion skills ship in later weeks of the toolkit. See [README](../../README.md) for the roadmap.**
 
-| Need | See also |
-|-|-|
-| Write service page copy, one-liners | `/storybrand-copy` |
-| Ad campaign for a new service | `/google-ads-optimize` + `/programmatic-advertising` |
-| Funnel for a new service | `/funnel-architect` |
-| Email sequences for onboarding | `/email-sequence` |
-| Retention / upsell strategy | `/retention-engine` |
-| Landing-page UX | `/ux-audit` |
-| Broader marketing strategy | `/marketing-plan` |
-| Statistical evaluation of AI outputs | `/experiment-engine` |
-| Score generated content quality | `/expert-panel` |
+| Need | Companion skill | Ships |
+|-|-|-|
+| Write service page copy, one-liners | dedicated copywriting skill | Week 3 |
+| Ad campaign for a new service | google-ads + programmatic-advertising skills | Week 6 |
+| Funnel for a new service | funnel-architect skill | Week 5 |
+| Email sequences for onboarding | email-sequence skill | Week 3 |
+| Retention / upsell strategy | retention-engine skill | Week 7 |
+| Landing-page UX | ux-audit skill | Week 5 |
+| Broader marketing strategy | marketing-plan skill | Week 2 |
+| Statistical evaluation of AI outputs | experiment-engine skill | Week 2 |
+| Score generated content quality | expert-panel skill | Week 3 |
 
 ---
 
@@ -83,7 +83,7 @@ Generate candidate AI service offerings from a client's business, a vertical, or
 3. Keep candidates scoring 7+/10 weighted. Reject anything that scores low on data readiness — no data, no service.
 4. For the top 3, sketch a service brief (Template 2): outcome, scope, HITL pattern, pricing model, tech stack.
 5. Output: 3 service briefs with weighted score, risk profile, and estimated gross margin.
-6. **See also:** copy for service page → `/storybrand-copy`. Funnel to sell it → `/funnel-architect`.
+6. **See also:** copy for service page → dedicated copywriting skill (Week 3). Funnel to sell it → funnel-architect skill (Week 5).
 
 ### 2. Evaluate (specific opportunity)
 
@@ -177,7 +177,7 @@ Use this table in Brainstorm mode to systematically cover automation surface are
 | 3 | Call triage & receptionist | After-hours call answering, urgency classification, booking | LLM voice + workflow | Setup + monthly per-line |
 | 4 | Sales follow-up | Draft outreach, personalisation, cadence | LLM + workflow | Setup + monthly |
 | 5 | Content generation | Social posts, blog drafts, product descriptions | LLM with brand prompt | Setup + monthly managed |
-| 6 | Email sequences | Nurture drafts, broadcast ideation, subject-line variants | LLM + `/email-sequence` | Mid setup + low monthly |
+| 6 | Email sequences | Nurture drafts, broadcast ideation, subject-line variants | LLM + email-sequence skill (Week 3) | Mid setup + low monthly |
 | 7 | Proposal & quote generation | Template filling, pricing draw-down, risk clauses | LLM + document workflow | Setup + per-doc fee |
 | 8 | Forecasting & planning | Demand forecasts, staffing, cash-flow projections | Classical ML (regression, time-series) | Mid setup + quarterly refresh |
 | 9 | Anomaly detection | Fraud, quality-control, error-rate monitoring | Classical ML + LLM summary | Setup + monthly monitoring |
@@ -231,10 +231,12 @@ Load in tandem when relevant:
 
 - `/market-pain` — before you design a service for a vertical, validate demand.
 - `/product-strategy` — for a full multi-service architecture in a vertical.
-- `/marketing-plan` — to take the service to market.
-- `/funnel-architect` — for the sales sequence.
-- `/storybrand-copy` — for service-page copy.
-- `/email-sequence` — for onboarding and nurture flows.
-- `/experiment-engine` — when evaluating AI output quality statistically.
-- `/expert-panel` — to score generated content before it ships to a client.
-- `/pm` — to manage the resulting engagement.
+
+**Companion skills (ship in later weeks of the toolkit — see [README](../../README.md) for the roadmap):**
+
+- marketing-plan skill (Week 2) — to take the service to market.
+- experiment-engine skill (Week 2) — when evaluating AI output quality statistically.
+- expert-panel skill (Week 3) — to score generated content before it ships to a client.
+- email-sequence skill (Week 3) — for onboarding and nurture flows.
+- copywriting skill (Week 3) — for service-page copy.
+- funnel-architect skill (Week 5) — for the sales sequence.
