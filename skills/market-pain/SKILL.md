@@ -319,7 +319,7 @@ Launch parallel research using the Research Tool Hierarchy above. Use Chrome fal
 
 > Search: `"[industry]" "[geography]" business count OR market size OR industry report`
 > Search: `"[industry]" complaints OR challenges OR frustrations site:[local forums or linkedin.com]`
-> → WebFetch top 2-3 URLs → extract real numbers and quotes, tag each `[VERIFIED: url]`
+> → WebFetch top 2-3 URLs → extract real numbers and quotes, tag each `[E:S#]`
 
 ### Phase 1 Output
 
@@ -415,6 +415,8 @@ If you're about to skip Phase 2.5, stop. Run it. If it passes, you lost 20 minut
 
 **Announce:** "PHASE 2.5: Economic Viability Analysis for [industry] in [geography]"
 
+**Phase 0 precondition check**: if `evidence/evidence.md` does not exist, run Phase 0 first. The subagent prompts below assume `evidence/raw/` is on disk; without it, raw saves silently fail.
+
 ### Research Architecture
 
 Launch 4 parallel research streams. Each follows the Verified Research Protocol: `perplexity_search` → `WebFetch` top URLs → save raw → grep-verify → ledger entry `[E:S#]`.
@@ -423,6 +425,7 @@ Launch 4 parallel research streams. Each follows the Verified Research Protocol:
 - "Save raw fetched content to `evidence/raw/{stream-name}-{source-slug}-{date}.md` BEFORE returning."
 - "Return ledger entries in the format from `reference/evidence-ledger-protocol.md`. Include the `Grep-verified` field with the pattern + count you actually ran."
 - "If you cannot grep-verify a quote, drop it — do not paraphrase."
+- "Forbidden phrases (signal hallucination): 'Many users say', 'Industry studies show', 'Research suggests', 'Most {industry} businesses'. Do NOT cite snippets — WebFetch every URL you plan to cite."
 
 **After streams return**: main context re-runs `Grep` on each subagent-claimed quote against the saved raw file. Merge only verified entries into master `evidence/evidence.md`. Subagent trust is verify-then-merge, not trust-and-merge.
 
@@ -433,7 +436,7 @@ Run these `perplexity_search` queries:
 > `"[industry]" small business benchmarks margin profit`
 > `"[industry]" [geography] profit margin OR revenue OR "industry report"`
 
-Then WebFetch the top 2-3 URLs from each search. Extract: (1) business count by size tier, (2) benchmark margins (cost of sales %, total expenses %), (3) revenue ranges by business size, (4) growth/decline trend. Tag every number `[VERIFIED: url]` or `[UNVERIFIED]`.
+Then WebFetch the top 2-3 URLs from each search. Extract: (1) business count by size tier, (2) benchmark margins (cost of sales %, total expenses %), (3) revenue ranges by business size, (4) growth/decline trend. Tag every number `[E:S#]` or `[A]`.
 
 **Stream 2: Current Technology Spend**
 
@@ -442,7 +445,7 @@ Run these `perplexity_search` queries:
 > `"[industry]" "[top tool name]" pricing tiers`
 > `"[industry]" technology adoption OR "still using spreadsheets" OR "paper based"`
 
-Then WebFetch each tool's ACTUAL PRICING PAGE (not review summaries). Extract: (1) exact pricing tiers per tool, (2) target business size, (3) any survey data on tech adoption rates. Tag every price `[VERIFIED: url]`.
+Then WebFetch each tool's ACTUAL PRICING PAGE (not review summaries). Extract: (1) exact pricing tiers per tool, (2) target business size, (3) any survey data on tech adoption rates. Tag every price `[E:S#]`.
 
 **Stream 3: Problem-Specific Replacement Spend**
 
@@ -557,9 +560,12 @@ Every Phase 3 output MUST include this field at the top, filled in before any ga
 - Platform(s) audited: [list specific marketplace URLs visited]
 - Tools catalogued: [count, e.g., "26 tools listed"]
 - Audit method: [Chrome / WebFetch / both]
+- Ledger source: [E:S#] (raw file in evidence/raw/ contains the tool list — first 3 tool names: [name1, name2, name3])
 ```
 
 **If this field says NO or is empty, the Phase 3 report is INVALID.** Stop, audit the marketplace, then re-run Phase 3. No gap claims without the audit. No exceptions.
+
+**Audit attestation must be ledger-backed**: the cited tool count and the first 3 tool names must trace to an `[E:S#]` ledger entry whose raw file (`evidence/raw/marketplace-{platform}-{date}.md` or screenshot) contains the actual list. An audit attestation without a corresponding raw file is a hallucination and the report is invalid.
 
 ### Mandatory Competitor Page Visits (BEFORE claiming gaps)
 
@@ -605,7 +611,7 @@ For each qualifying problem, follow the Verified Research Protocol:
 - Pricing page (exact tiers)
 - Review pages on G2/Capterra (negative reviews, "What do you dislike?")
 
-**Step 3 — Extract and tag**: competitor name, exact pricing `[VERIFIED: url]`, key weaknesses from real reviews `[VERIFIED: url]`, features users request. Do NOT trust search snippets for pricing — fetch the real page.
+**Step 3 — Extract and tag**: competitor name, exact pricing `[E:S#]`, key weaknesses from real reviews `[E:S#]`, features users request. Do NOT trust search snippets for pricing — fetch the real page.
 
 Apply Source Access Protocol — use Chrome fallback for any blocked sources.
 
@@ -653,12 +659,14 @@ For each qualifying problem:
 
 ### Existing Solutions
 
-| Solution | Price | Years in Market | Key Weakness | User Complaints (verbatim) |
-|-|-|-|-|-|
-| [Name] | [Price] | [Years] | [Failure point] | "[exact quote]" |
+| Solution | Price | Years in Market | Key Weakness | User Complaints (verbatim) | Ledger |
+|-|-|-|-|-|-|
+| [Name] | [Price] `[E:S#]` | [Years] | [Failure point] `[E:S#]` | "[exact quote]" `[E:S#]` | S# |
+
+**Every row must cite `[E:S#]` for price + verbatim complaint quote.** The Ledger column lists the source numbers from `evidence/evidence.md`. A solution row without ledger backing for price and complaint = unsupported claim, drop it.
 
 ### The Gap
-[What users want that nobody provides — be specific]
+[What users want that nobody provides — be specific. Cite `[E:S#]` or `[I:S#,S#]` for every user-want claim. Bare assertions like "users want X" without a ledger source = `[A]` and excluded from gap durability scoring.]
 
 ### Gap Durability
 - **Rating**: FEATURE GAP / STRUCTURAL GAP / DATA MOAT
@@ -723,6 +731,11 @@ For each qualifying problem:
 **Announce:** "PHASE 4: Generating conversation guide for human validation"
 
 This phase generates the script. **The human executes the calls.** AI cannot do this part.
+
+**Evidence Ledger applies differently to Phase 4.** Phases 1–3 ledger entries trace to fetched-and-grep-verified raw files. Phase 4 calls have no equivalent mechanical proof (no recording-MCP exists in this skill). Therefore:
+- Every Phase 4 quote cited in the final report is tagged `[A]` (assumption) — Phase 4 evidence cannot feed kill switches that require `[E:S#]`.
+- The post-call scoring rubric is the human-agent's attestation. Treat it as input to a judgment call, not a mechanical pass/fail.
+- Phase 4 calls may be logged with date + contact name (or "confidential") + one-line problem statement in `evidence/raw/phase4-calls-{date}.md` for traceability, but this is logging, not verification.
 
 ### MANDATORY: Phase 4 is non-negotiable before any BUILD decision
 
@@ -802,18 +815,18 @@ Launch 4 parallel research streams following the Verified Research Protocol:
 **Stream 1: Industry Software Market Share**
 > `perplexity_search`: `"[industry]" software market share [geography] OR "[dominant platform]" users`
 > `perplexity_search`: `"[industry]" "still using spreadsheets" OR "no software" OR "pen and paper" [geography]`
-> → WebFetch top results. Extract platform names, user counts, pricing. Tag `[VERIFIED: url]`.
+> → WebFetch top results. Extract platform names, user counts, pricing. Tag `[E:S#]`.
 
 **Stream 2: Primary Platform API Deep Dive**
 > `perplexity_search`: `"[dominant platform]" API documentation OR developer portal OR integration`
-> → WebFetch the actual developer docs / API reference page. Extract: access level (open/gated), endpoints, auth method, webhooks, rate limits. Tag `[VERIFIED: url]`.
+> → WebFetch the actual developer docs / API reference page. Extract: access level (open/gated), endpoints, auth method, webhooks, rate limits. Tag `[E:S#]`.
 
 **Stream 3: Secondary Platform APIs**
 > Same pattern for #2 and #3 platforms + any legacy systems.
 
 **Stream 4: Build Stack Feasibility**
 > `perplexity_search`: `"[key technology]" pricing [geography] OR "per minute" OR "per message"`
-> → WebFetch each vendor's actual pricing page. Extract per-customer cost model. Tag `[VERIFIED: url]`.
+> → WebFetch each vendor's actual pricing page. Extract per-customer cost model. Tag `[E:S#]`.
 
 ### Gating Assessment
 
@@ -836,17 +849,17 @@ Launch 3 parallel research streams following the Verified Research Protocol:
 **Stream 1: Privacy & Data Law**
 > `perplexity_search`: `privacy law [geography] "small business exemption" AI OR automation`
 > `perplexity_search`: `"[industry]" data privacy regulation [geography] OR "call recording" consent`
-> → WebFetch the actual legislation pages or regulator guidance. Extract applicability, exemptions, requirements. Tag `[VERIFIED: url]`.
+> → WebFetch the actual legislation pages or regulator guidance. Extract applicability, exemptions, requirements. Tag `[E:S#]`.
 
 **Stream 2: Liability & Insurance**
 > `perplexity_search`: `AI liability insurance [geography] "professional indemnity" OR "public liability" OR cyber`
 > `perplexity_search`: `"[industry]" AI errors liability "consumer law" [geography]`
-> → WebFetch insurer pricing pages and legal guidance. Tag `[VERIFIED: url]`.
+> → WebFetch insurer pricing pages and legal guidance. Tag `[E:S#]`.
 
 **Stream 3: Industry-Specific Regulations**
 > `perplexity_search`: `"[industry]" "[specific action e.g., automated communications]" regulations [geography]`
 > `perplexity_search`: `spam act OR "do not call" [geography] automated messages business`
-> → WebFetch regulator/legislation pages. Tag `[VERIFIED: url]`.
+> → WebFetch regulator/legislation pages. Tag `[E:S#]`.
 
 ### Blocker Assessment
 
@@ -871,7 +884,7 @@ Launch parallel research streams — one per major competitor (max 4) + one stra
 **Per-Competitor Stream:**
 > `perplexity_search`: `"[competitor name]" features OR pricing OR review`
 > → WebFetch their actual website, pricing page, and G2/Capterra review page
-> → Extract: exact features, exact pricing tiers `[VERIFIED: url]`, negative reviews verbatim `[VERIFIED: url]`, integrations, team/funding info
+> → Extract: exact features, exact pricing tiers `[E:S#]`, negative reviews verbatim `[E:S#]`, integrations, team/funding info
 > → For anything not on their website, try Chrome MCP
 
 **Strategic Analysis (Claude synthesis, no external search needed):**
@@ -902,7 +915,7 @@ Launch 3 parallel research streams following the Verified Research Protocol:
 
 **Stream 1: Exact Services + Per-Customer Cost Model**
 > `perplexity_search`: `"[service e.g., voice AI vendor]" pricing "per minute" OR "per message" OR "per call"`
-> → WebFetch EACH vendor's actual pricing page. Extract exact tiers, per-unit costs. Tag `[VERIFIED: url]`.
+> → WebFetch EACH vendor's actual pricing page. Extract exact tiers, per-unit costs. Tag `[E:S#]`.
 > → Calculate per-customer cost model from verified prices only.
 
 **Stream 2: Architecture + 30-Day Build Plan**
@@ -912,7 +925,7 @@ Launch 3 parallel research streams following the Verified Research Protocol:
 **Stream 3: Go-to-Market in 30 Days**
 > `perplexity_search`: `"[industry]" "[geography]" business directory OR association OR "member list"`
 > `perplexity_search`: `"[industry]" outreach OR "cold email" OR "first customers" case study`
-> → WebFetch top results. Extract real channels, directories, associations. Tag `[VERIFIED: url]`.
+> → WebFetch top results. Extract real channels, directories, associations. Tag `[E:S#]`.
 > → Build GTM plan from verified channels only.
 
 ### Output
@@ -1036,5 +1049,5 @@ Any line that contains a number-like claim WITHOUT an `[E:S#]` / `[I:S#,S#]` / `
 | Counting competitors from search results, not marketplace pages | Search finds top 3-5. The actual platform marketplace may have 3-5x more. ALWAYS visit the dominant platform's app marketplace page and catalogue every AI/automation tool before claiming gaps |
 | Declaring "zero competitors" without visiting competitor product pages | Research agents search FOR competitors and get marketing summaries. You must VISIT their actual website + marketplace listing to see exact features. A moat-killing overlap can hide behind a single unvisited URL |
 | Calling a feature gap a "moat" | If the nearest competitor could close the gap in one sprint using their existing infrastructure (same API, same customer base, same messaging channel), it's a feature gap, not a moat. A real moat requires structural barriers (proprietary data, regulatory certification, network effects, platform lock-in). Every "gap" needs a durability rating: FEATURE GAP / STRUCTURAL GAP / DATA MOAT |
-| Using `perplexity_ask` for specific data | `perplexity_ask` FABRICATES business counts, revenue figures, competitor pricing, and market share. Use it ONLY for theme discovery ("what are the main complaints?"). For facts and numbers: `perplexity_search` → `WebFetch` → extract from real pages. Every number must be `[VERIFIED: url]` or `[UNVERIFIED]` |
-| Citing numbers without a source URL | If you can't link a specific number to a fetched page, tag it `[UNVERIFIED]`. Business decisions depend on this data being real. "Perplexity said so" is not a source |
+| Using `perplexity_ask` for specific data | `perplexity_ask` FABRICATES business counts, revenue figures, competitor pricing, and market share. Use it ONLY for theme discovery ("what are the main complaints?"). For facts and numbers: `perplexity_search` → `WebFetch` → extract from real pages. Every number must be `[E:S#]` or `[A]` |
+| Citing numbers without a source URL | If you can't link a specific number to a fetched page, tag it `[A]`. Business decisions depend on this data being real. "Perplexity said so" is not a source |
