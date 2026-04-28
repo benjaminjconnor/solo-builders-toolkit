@@ -200,48 +200,72 @@ for c in comments:
 
 ### Research Tool Hierarchy (use the RIGHT tool for each data type)
 
-| Data Type | Best Tool | Why |
-|-|-|-|
-| Forum complaints, verbatim quotes | **Reddit JSON API** (Python requests via Bash) | Only way to get raw Reddit posts with scores/URLs. Perplexity can't access Reddit. |
-| Finding real sources (URLs for stats, studies, pricing) | **`perplexity_search`** | Returns real URLs with snippets and dates. Zero hallucination risk — raw search results, no AI synthesis. |
-| Extracting data from found sources | **`WebFetch`** on URLs from `perplexity_search` | Fetches real page content. The ONLY way to get verified numbers. |
-| Broad theme discovery ONLY | **`perplexity_ask`** (search_context_size: "high") | ONLY for "what are the main themes/complaints in [industry]?" — directions to investigate, NOT facts to cite. Never trust specific stats, business counts, or pricing from `perplexity_ask`. |
-| Competitor pricing, feature lists | **WebFetch** (direct URL) | Fetches real page content. Give it the actual pricing URL, not a search query. |
-| Marketplace catalogues | **WebFetch** or **Chrome MCP** | Must visit the actual marketplace page. Search results miss 50%+ of listed tools. |
-| Government / industry benchmark data | **`perplexity_search`** → **WebFetch** or **Chrome MCP** | Search to find the right page URL, then fetch/Chrome it for real numbers. |
-| Gap analysis, analytical synthesis | **Claude synthesis** from verified data | Claude synthesises from WebFetched sources only. Every claim must trace to a fetched URL or be tagged `[UNVERIFIED]`. |
+| Data Type | Tier 1 (Perplexity) | Tier 2 (Built-in only) | Tier 3 (Manual) |
+|-|-|-|-|
+| Forum complaints, verbatim quotes | Reddit JSON API (curl) → save → grep-verify | Reddit JSON API (curl) → save → grep-verify | User pastes thread text into `evidence/raw/manual-*.md` |
+| Finding real source URLs | `perplexity_search` → save URL list | `WebSearch` → save result list | User pastes URL list |
+| Extracting data from sources | `WebFetch` → save → grep-verify | `WebFetch` → save → grep-verify | User pastes page text into `raw/manual-*.md` |
+| Theme discovery (directions only) | `perplexity_ask` (search_context_size: high) | `WebSearch` query like "what {industry} owners complain about" → fetch top results | User pastes 2-3 forum thread URLs |
+| Robots.txt-blocked pages | Chrome MCP → save | Chrome MCP → save | User pastes manually |
+| Gap analysis, synthesis | Claude synthesis from `[E:S#]` ledger entries only | Same | Same |
 
-**DO NOT USE `perplexity_research`** — 10-20x more expensive, 5 RPM limit, unreliable.
+**Banned regardless of tier**:
+- `perplexity_research` — cost + unreliability documented across many runs
+- Citing from snippets (Perplexity description, WebSearch description) without WebFetch + save + grep-verify
+- Specific numbers (business count, pricing, market share) tagged anything other than `[E:S#]`
 
-**DO NOT TRUST `perplexity_ask` FOR SPECIFIC DATA.** It fabricates business counts, revenue figures, competitor pricing, and market share. Confirmed across many industry reports. Use it ONLY for theme discovery ("what are people complaining about?"), where hallucination doesn't matter because you're looking for directions to investigate, not facts to cite.
+**`perplexity_ask` rule**: theme discovery ONLY. Output goes into a working-notes scratch, never into the ledger or report. Anything you'd cite must be re-grounded via `perplexity_search` → WebFetch → save → grep-verify.
 
-### Verified Research Protocol (applies to ALL phases)
+### Verified Research Protocol (Evidence Ledger discipline)
 
-Every factual claim in the report must follow this 3-layer pattern:
+Every factual claim in the report follows the **Evidence Ledger Protocol** at `reference/evidence-ledger-protocol.md` (this skill's own copy — self-contained). Read it once before Phase 1.
 
-**Layer 1: Find sources** — `perplexity_search` with focused query → returns real URLs
-**Layer 2: Fetch content** — `WebFetch` top 2-3 URLs from Layer 1 → real page text
-**Layer 3: Extract + tag** — Claude extracts specific data from fetched text. Tag every data point:
-- `[VERIFIED: source-url]` — data extracted directly from a fetched page
-- `[UNVERIFIED]` — data from search snippets, agent summaries, or memory. Do NOT present as fact.
+**The three rules:**
+1. **Raw-first** — every fetched page saves to `evidence/raw/{type}-{slug}-{date}.{ext}` BEFORE anything is written into the ledger.
+2. **Grep-verify every quote** — after writing a verbatim quote in `evidence/evidence.md`, run `Grep` on the raw file for an 8-12 word substring. Zero matches = hallucinated, delete.
+3. **Cite by Source #** — every claim in the report is tagged `[E:S#]` (evidence) or `[I:S#,S#]` (inference) or `[A]` (assumption, excluded from kill switches). No bare URLs in the report body.
 
-**The pattern in practice:**
+**Three-tier hierarchy** (skill auto-detects which tier the user is on):
+
+| Tier | When | Tools | Notes |
+|-|-|-|-|
+| **1** | Perplexity MCP installed | `perplexity_search` → `WebFetch` → save → grep-verify | `perplexity_ask` allowed for theme discovery only; never cite from it |
+| **2** | No Perplexity (default for public toolkit users) | `WebSearch` → `WebFetch` → save → grep-verify; Reddit via curl + JSON API | Same discipline, more steps |
+| **3** | No internet / no MCP | User pastes URLs + page content into `evidence/raw/manual-*.md` | Same grep-verify discipline; pasted file IS the raw |
+
+**Hard rules (apply to all tiers):**
+- NEVER cite a specific number (business count, revenue, margin %, pricing) without a fetched-and-grep-verified source
+- NEVER cite from a snippet (Perplexity description, WebSearch description) — must WebFetch + save + grep-verify
+- If WebFetch fails on a URL, try Chrome MCP before marking `[INACCESSIBLE]`
+- Subagent quote claims are NOT trusted — main context re-runs `Grep` on each before merging into master ledger
+- Forbidden phrases (signal hallucination): "Many users say…", "It's commonly reported…", "Industry studies show…", "Research suggests…", "Most {industry} businesses…". Replace with structured citations per the protocol.
+
+**Kill switches count ledger entries, not vibes.** Phase 1 "≥5 complaints" = ≥5 `[E:S#]` ledger entries with complaint quotes. Phase 2.5 "≥1,000 businesses at ≥$75/mo" = `[E:S#]` source for the count + `[E:S#]` source for the price. `[A]` (assumption) entries do NOT count toward kill switches.
+
+---
+
+## Phase 0: Evidence Setup (ALWAYS run first)
+
+Before any research starts, initialize the evidence ledger so every claim made downstream is grep-verifiable.
+
+```bash
+mkdir -p evidence/raw
+test -f evidence/evidence.md || cat > evidence/evidence.md <<'EOF'
+# Evidence Ledger — [industry] in [geography], $(date +%Y-%m-%d)
+
+**Tier**: [1=Perplexity / 2=Built-in / 3=Manual]
+
+## Index
+
+| # | Source type | URL | Fetched | Raw file | Status |
+|-|-|-|-|-|-|
+
+EOF
 ```
-1. perplexity_search: "[industry] [geography] business count industry reports"
-   → Returns 10 URLs with snippets
-2. WebFetch: top 2-3 most relevant URLs
-   → Returns full page content with real numbers
-3. Claude extracts: "~50,000 businesses [VERIFIED: example.com/industry/...]"
-```
 
-**Hard rules:**
-- NEVER cite a specific number (business count, revenue, margin %, pricing) without a fetched source
-- If WebFetch fails on a URL, try Chrome MCP before marking `[UNVERIFIED]`
-- If no source can be fetched for a claim, tag it `[UNVERIFIED]` and note "no primary source found"
-- Aggregate counts across multiple sources when possible
-- `perplexity_search` snippets are acceptable for LOW-stakes claims (e.g., "company founded in 2019") but NOT for numbers you'd put in a business case
+Announce: "Phase 0: Evidence ledger initialized at `evidence/evidence.md`. Tier: [1/2/3]."
 
-**Subagent trust rule**: Subagents using WebSearch or perplexity_search find URLs but may hallucinate specific numbers when pages don't load. For any pricing or market share claim from a subagent, the main context MUST verify by WebFetching the actual URL. If the subagent didn't provide a URL for a specific number, mark it `[UNVERIFIED]`.
+**Read this skill's protocol reference before proceeding**: `reference/evidence-ledger-protocol.md` (ships in this skill's `reference/` folder — self-contained, no cross-skill dependency). Every research call in Phases 1–8 must follow it. The three rules in one sentence: **save raw → grep-verify quotes → cite by `[E:S#]` Source #**. The protocol defines ledger entry format, the grep-verify step, forbidden phrases, and the snippet-vs-page rule.
 
 ---
 
@@ -308,6 +332,12 @@ For each complaint found, document:
 **Existing solutions mentioned:** [What they've tried that failed]
 **Emotional intensity:** [Venting / Frustrated / Desperate / Actively switching]
 ```
+
+**Per-source ledger entry** (mandatory — see `reference/evidence-ledger-protocol.md` for full format):
+
+For each complaint, append a `## S{N}` block to `evidence/evidence.md` with URL, fetched date, raw file path, source type, author, score, created date, the verbatim quote, and the grep-verify pattern + count. Then update the Index table at top.
+
+**Phase 1 exit check**: count ledger entries tagged with complaint quotes. If <5, kill per Kill Switch #1 below. The count is **ledger entries**, not your judgment of "enough complaints found."
 
 ### Kill Switch #1
 
@@ -387,7 +417,14 @@ If you're about to skip Phase 2.5, stop. Run it. If it passes, you lost 20 minut
 
 ### Research Architecture
 
-Launch 4 parallel research streams. Each follows the Verified Research Protocol: `perplexity_search` → `WebFetch` top URLs → extract verified data → tag sources.
+Launch 4 parallel research streams. Each follows the Verified Research Protocol: `perplexity_search` → `WebFetch` top URLs → save raw → grep-verify → ledger entry `[E:S#]`.
+
+**Each stream's subagent prompt MUST include**:
+- "Save raw fetched content to `evidence/raw/{stream-name}-{source-slug}-{date}.md` BEFORE returning."
+- "Return ledger entries in the format from `reference/evidence-ledger-protocol.md`. Include the `Grep-verified` field with the pattern + count you actually ran."
+- "If you cannot grep-verify a quote, drop it — do not paraphrase."
+
+**After streams return**: main context re-runs `Grep` on each subagent-claimed quote against the saved raw file. Merge only verified entries into master `evidence/evidence.md`. Subagent trust is verify-then-merge, not trust-and-merge.
 
 **Stream 1: Business Economics (Benchmarks + Industry Data)**
 
@@ -954,10 +991,32 @@ Save complete report to a markdown file (e.g. `[industry-slug]-pain-report.md`):
 - `perplexity_search` calls: [count]
 - `perplexity_ask` calls (theme discovery only): [count]
 - `WebFetch` calls: [count]
-- Data points tagged `[VERIFIED]`: [count]
-- Data points tagged `[UNVERIFIED]`: [count]
+- Ledger entries tagged `[E:S#]` (verbatim evidence): [count]
+- Ledger entries tagged `[I:S#,S#]` (inference across sources): [count]
+- Claims tagged `[A]` (assumption — excluded from kill switches): [count]
 - Date researched: [date]
+- Evidence tree appended (raw files): [yes/no — see `evidence/raw/`]
 ```
+
+### Pre-delivery quality checks (run on REPORT.md before sending)
+
+**Forbidden-phrase scan** — these signal hallucination:
+
+```bash
+grep -nE "Many users (say|complain)|It's commonly|commonly reported|Industry studies show|Research suggests|Most [a-z]+ (businesses|owners) (do|say|prefer)" REPORT.md
+```
+
+If any matches: replace with structured citation per `reference/evidence-ledger-protocol.md`. Examples:
+- ❌ "Many users complain about X"
+- ✅ "8 of 17 posts in r/X (2025-12 to 2026-04) mention X. Example: '[verbatim]' — /u/author, score N [E:S12]"
+
+**Final claim-coverage scan**:
+
+```bash
+grep -nE "[A-Z][a-z]+ [0-9]" REPORT.md | grep -vE "\[E:S[0-9]+\]|\[I:S[0-9]+|\[A\]"
+```
+
+Any line that contains a number-like claim WITHOUT an `[E:S#]` / `[I:S#,S#]` / `[A]` tag = unfounded claim. Either tag it or delete it.
 
 ## Common Mistakes
 
