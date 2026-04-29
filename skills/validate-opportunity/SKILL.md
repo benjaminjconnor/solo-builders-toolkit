@@ -112,6 +112,7 @@ Check `docs/strategy/[industry-slug]/` for existing artifacts:
 
 - Pain report recent + complete + passed all 4 kill switches + industry+geography+platform match → **skip Stage 1's re-run**, load findings from the report, proceed to Stage 2. Note "Stage 1 reused from [date]" in the consolidated report.
 - Pain report recent but only Phases 1-3 complete (no Phase 4 execution log) → **do NOT skip**. Phase 4 is mandatory before any BUILD decision per `/market-pain` rules. Run Stage 1 from Phase 4.
+- **Substantive Phase 4 check (not structural)**: the existence of a "Phase 4: Conversation Guide" heading does NOT mean Phase 4 was executed. Required: an "Execution Log" subsection with (a) call dates, (b) participant identifiers (first name or initials, or "confidential"), (c) one-line notes per call, (d) post-call scoring per call. Missing any of these → treat as Phase 4 not executed → re-run Stage 1 from Phase 4. The conversation-guide template counts as design, not validation.
 - Pain report stale (>90 days) → **re-run Stage 1**. Market shifts, platform rules change, new competitors enter.
 - Pain report geography mismatch → **re-run Stage 1**. Geography-specific findings don't transfer (e.g., US regulation ≠ UK regulation).
 - Pain report is a KILL report (triggered any `/market-pain` kill switch) → **do NOT reuse for a GO decision**. The kill is the answer. Resume mode only reuses reports that PASSED all 4 kill switches. If the builder wants to retry the same vertical, it's a re-run (industry may have shifted), not a resume.

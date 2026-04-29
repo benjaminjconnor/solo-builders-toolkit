@@ -104,8 +104,9 @@ Announce: "Phase 0: Evidence ledger initialized at `evidence/evidence.md`. Tier:
 1. Read the pain report
 2. Confirm: Phase 4 (conversation guide) reached? Min 3 problems scored 20+/30?
 3. Extract: top problems (20+/30), competitor gaps, economics data
-4. **Output:** Summary table of qualifying problems with scores, gaps, economics
-5. **Gate:** All market-pain phases done AND 3+ problems score 20+. Fail = **STOP, run `/market-pain` first.** Counts feed from `evidence/evidence.md` ledger entries with `[E:S#]` tags, not from agent recall. `[A]` (assumption) entries don't count.
+4. **Ledger Integrity Check (mandatory)**: open the pain run's `evidence/evidence.md`. Verify (a) Index table exists, (b) for every `[E:S#]` cited in the pain report's Phase 1, 2, 2.5, 3 sections, the matching `## S#` entry exists in the ledger. Any missing entry = STOP and re-run `/market-pain` with proper ledger discipline. `/product-strategy` cannot proceed citing phantom ledger entries from the upstream skill.
+5. **Output:** Summary table of qualifying problems with scores, gaps, economics
+6. **Gate:** All market-pain phases done AND 3+ problems score 20+ AND ledger integrity check passed. Fail = **STOP, run `/market-pain` first.** Counts feed from `evidence/evidence.md` ledger entries with `[E:S#]` tags, not from agent recall. `[A]` (assumption) entries don't count.
 
 ---
 

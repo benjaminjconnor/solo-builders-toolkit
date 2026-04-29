@@ -242,6 +242,14 @@ Every factual claim in the report follows the **Evidence Ledger Protocol** at `r
 
 **Kill switches count ledger entries, not vibes.** Phase 1 "≥5 complaints" = ≥5 `[E:S#]` ledger entries with complaint quotes. Phase 2.5 "≥1,000 businesses at ≥$75/mo" = `[E:S#]` source for the count + `[E:S#]` source for the price. `[A]` (assumption) entries do NOT count toward kill switches.
 
+**Pre-gate forbidden-phrase scan** (run BEFORE every kill-switch evaluation, not just before final delivery): grep the phase output (and any text feeding the gate decision) for forbidden phrases:
+
+```bash
+grep -nE "Many users (say|complain)|It's commonly|commonly reported|Industry studies show|Research suggests|Most [a-z]+ (businesses|owners) (do|say|prefer)" {phase_output_file}
+```
+
+Any matches MUST be replaced with structured `[E:S#]` citations BEFORE the kill-switch evaluates. A claim containing a forbidden phrase cannot feed a gate decision. The end-of-report scan (in Pre-delivery quality checks) is the second line of defence; this pre-gate scan is the first.
+
 ---
 
 ## Phase 0: Evidence Setup (ALWAYS run first)
@@ -429,6 +437,23 @@ Launch 4 parallel research streams. Each follows the Verified Research Protocol:
 
 **After streams return**: main context re-runs `Grep` on each subagent-claimed quote against the saved raw file. Merge only verified entries into master `evidence/evidence.md`. Subagent trust is verify-then-merge, not trust-and-merge.
 
+**MANDATORY pre-gate attestation** (BEFORE Phase 2.5 kill-switch evaluation runs): emit this block to `evidence/evidence.md` and to the report:
+
+```
+### Subagent re-verification attestation (Phase 2.5)
+
+| Stream | Subagent entries claimed | Re-verified by main context | Dropped (zero grep matches) |
+|-|-|-|-|
+| Stream 1 | N | M | N-M |
+| Stream 2 | N | M | N-M |
+| Stream 3 | N | M | N-M |
+| Stream 4 | N | M | N-M |
+
+Kill-switch evaluation runs on M (re-verified) entries only. Dropped entries are excluded from counts.
+```
+
+If this attestation block is missing, Phase 2.5 is INVALID and the kill switch cannot be evaluated. No exceptions — the attestation is what makes the verify-then-merge rule mechanical instead of aspirational.
+
 **Stream 1: Business Economics (Benchmarks + Industry Data)**
 
 Run these `perplexity_search` queries:
@@ -566,6 +591,8 @@ Every Phase 3 output MUST include this field at the top, filled in before any ga
 **If this field says NO or is empty, the Phase 3 report is INVALID.** Stop, audit the marketplace, then re-run Phase 3. No gap claims without the audit. No exceptions.
 
 **Audit attestation must be ledger-backed**: the cited tool count and the first 3 tool names must trace to an `[E:S#]` ledger entry whose raw file (`evidence/raw/marketplace-{platform}-{date}.md` or screenshot) contains the actual list. An audit attestation without a corresponding raw file is a hallucination and the report is invalid.
+
+**ORDERING GATE (mandatory)**: the marketplace audit + ledger entry MUST exist on disk BEFORE any Phase 3 gap claim is written. Do NOT write gap analysis, gap durability ratings, or competitor comparisons until the audit attestation field is filled in AND the cited ledger entry exists in `evidence/evidence.md`. Writing gap claims first then back-filling the audit afterward is the exact failure mode this gate prevents — gap narratives that survived the writing process don't get rewritten when the audit later contradicts them.
 
 ### Mandatory Competitor Page Visits (BEFORE claiming gaps)
 
