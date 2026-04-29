@@ -11,6 +11,8 @@ Sequential orchestrator. Takes an industry + geography + raw idea. Chains three 
 
 **This is a RIGID orchestrator.** No mental simulation of skills — actually invoke them. No paraphrasing their gates — honor them. No inventing phases — use what the underlying skills define.
 
+All drift checks save raw fetched content to `evidence/raw/drift-{date}.md` and grep-verify any cited quote, per the Evidence Ledger Protocol at this skill's `reference/evidence-ledger-protocol.md` (self-contained — no cross-skill dependency). Three rules: save raw → grep-verify quotes → cite by `[E:S#]` Source #. The protocol covers the ledger entry format, the grep-verify step, forbidden phrases, and the snippet-vs-page rule.
+
 ---
 
 ## When to use
@@ -114,7 +116,7 @@ Check `docs/strategy/[industry-slug]/` for existing artifacts:
 - Pain report geography mismatch → **re-run Stage 1**. Geography-specific findings don't transfer (e.g., US regulation ≠ UK regulation).
 - Pain report is a KILL report (triggered any `/market-pain` kill switch) → **do NOT reuse for a GO decision**. The kill is the answer. Resume mode only reuses reports that PASSED all 4 kill switches. If the builder wants to retry the same vertical, it's a re-run (industry may have shifted), not a resume.
 - **Platform drift check (named)**: if the `raw_idea` names a dominant platform different from the one the pain report researched in Phase 3, **re-run Stage 1 Phase 3 at minimum**. Different platform = different API access, different competitor set, different gap durability. Example: pain report researched Xero-integrating tools; new idea says FreshBooks — Phase 3 must re-run.
-- **Platform drift check (market)**: before Stage 2 begins with a reused pain report, run 1-2 quick `perplexity_search` or WebFetch queries against current market share data to confirm the Phase 3 dominant platform is still dominant today. If the market's dominant platform has shifted (e.g., pain report said Xero at 60% share, current market data shows a new leader), re-run Stage 1 Phase 3 at minimum. Market share shifts meaningfully within the 90-day window in fast-moving verticals.
+- **Platform drift check (market)**: before Stage 2 begins with a reused pain report, run 1-2 quick `perplexity_search` or WebFetch queries against current market share data to confirm the Phase 3 dominant platform is still dominant today. If the market's dominant platform has shifted (e.g., pain report said Xero at 60% share, current market data shows a new leader), re-run Stage 1 Phase 3 at minimum. Market share shifts meaningfully within the 90-day window in fast-moving verticals. (save raw + grep-verify per `reference/evidence-ledger-protocol.md`; tag findings `[E:S#]` in a tiny drift-evidence.md alongside the validate-opportunity output)
 
 **Never** skip Stage 1's Phase 4. Online complaints reveal pain; calls reveal purchasing behavior. No validated demand without Phase 4 execution log.
 
@@ -353,6 +355,8 @@ Example for KILL: "KILLED at Stage 2 Phase 3 — legal blocker: [specific regula
 - First-customer acquisition sketch: [channel + timeline]
 
 ## Decision
+
+Drift findings cited in the verdict must trace to `[E:S#]` ledger entries. Bare URLs without ledger backing don't count toward verdict changes.
 
 ### If GO:
 

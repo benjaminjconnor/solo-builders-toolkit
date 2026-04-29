@@ -72,6 +72,31 @@ This skill owns: vertical strategy, service architecture, bundle design, build p
 
 ---
 
+## Phase 0: Evidence Setup (ALWAYS run first)
+
+Before any research starts, initialize the evidence ledger so every claim made downstream is grep-verifiable.
+
+```bash
+mkdir -p evidence/raw
+test -f evidence/evidence.md || cat > evidence/evidence.md <<'EOF'
+# Evidence Ledger — [vertical] product strategy, $(date +%Y-%m-%d)
+
+**Tier**: [1=Perplexity / 2=Built-in / 3=Manual]
+
+## Index
+
+| # | Source type | URL | Fetched | Raw file | Status |
+|-|-|-|-|-|-|
+
+EOF
+```
+
+Announce: "Phase 0: Evidence ledger initialized at `evidence/evidence.md`. Tier: [1/2/3]."
+
+**All web research follows the Evidence Ledger Protocol** at this skill's `reference/evidence-ledger-protocol.md` (self-contained — no cross-skill dependency; read once before any research). Three rules: **save raw → grep-verify quotes → cite by `[E:S#]` Source #**.
+
+---
+
 ## Phase 1: Pain Validation
 
 **Gate-check only.** Verify `/market-pain` phases 1-4 complete for this vertical.
@@ -80,7 +105,7 @@ This skill owns: vertical strategy, service architecture, bundle design, build p
 2. Confirm: Phase 4 (conversation guide) reached? Min 3 problems scored 20+/30?
 3. Extract: top problems (20+/30), competitor gaps, economics data
 4. **Output:** Summary table of qualifying problems with scores, gaps, economics
-5. **Gate:** All market-pain phases done AND 3+ problems score 20+. Fail = **STOP, run `/market-pain` first.**
+5. **Gate:** All market-pain phases done AND 3+ problems score 20+. Fail = **STOP, run `/market-pain` first.** Counts feed from `evidence/evidence.md` ledger entries with `[E:S#]` tags, not from agent recall. `[A]` (assumption) entries don't count.
 
 ---
 
@@ -88,7 +113,7 @@ This skill owns: vertical strategy, service architecture, bundle design, build p
 
 How services connect to existing client systems. **Must complete BEFORE Phase 4.**
 
-1. Identify dominant platforms from pain report or via verified web research (Perplexity + WebFetch)
+1. Identify dominant platforms from pain report or via verified web research (Perplexity + WebFetch — save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md)
 2. Per platform: API access (OPEN/GATED/NONE), auth method, key endpoints, rate limits, costs
 3. Map each qualifying problem to integration requirements
 4. Assess standalone viability (can MVP launch WITHOUT platform integration?)
@@ -102,7 +127,7 @@ How services connect to existing client systems. **Must complete BEFORE Phase 4.
    - **Timeline:** estimated approval timeline based on evidence, not assumption
 6. **Output:** Platform access matrix (including all Integration Viability Gate fields) + per-problem integration map + standalone vs integrated verdict
 7. **Gate:** MVP feasibility confirmed. If all paths GATED-RED/NONE AND no standalone path: **STOP.**
-8. **GATE RULE:** If >50% of the addressable market uses platforms where write access is GATED or UNKNOWN, this is a **YELLOW flag** — note it prominently and proceed with caution. If >50% uses platforms where write access is confirmed READ-ONLY or no developer path exists, this is a **RED flag**. RED flags require explicit user acknowledgment before proceeding — the skill must **STOP and present the risk.**
+8. **GATE RULE:** If >50% of the addressable market uses platforms where write access is GATED or UNKNOWN, this is a **YELLOW flag** — note it prominently and proceed with caution. If >50% uses platforms where write access is confirmed READ-ONLY or no developer path exists, this is a **RED flag**. RED flags require explicit user acknowledgment before proceeding — the skill must **STOP and present the risk.** Counts feed from `evidence/evidence.md` ledger entries with `[E:S#]` tags, not from agent recall. `[A]` (assumption) entries don't count.
 
 > **Measuring ">50%" correctly.** The rule measures **single-platform concentration**, not aggregate market share of read-only tools. If the dominant platform sits at 40% of the addressable market AND is confirmed READ-ONLY, that IS a RED flag — because 40% of the market uses ONE platform that blocks write-back, and those customers cannot be served. Do not aggregate scattered smaller tools to dodge the threshold. If any SINGLE platform holding ≥30% of the market is READ-ONLY with no write path, treat it as RED for that segment.
 
@@ -139,15 +164,15 @@ Define distinct products from validated pain. **Requires Phase 2 (integration) c
 
 ## Phase 5: Bundle Strategy
 
-**REQUIRES verified web research for ALL pricing claims.** Use deepthink / extended thinking. Pull exact competitor tiers from their public pricing pages, not summaries — Perplexity for source-URL discovery, WebFetch for the actual pricing page, nothing taken from AI-generated answers.
+**REQUIRES verified web research for ALL pricing claims.** Use deepthink / extended thinking. Pull exact competitor tiers from their public pricing pages, not summaries — Perplexity for source-URL discovery, WebFetch for the actual pricing page, nothing taken from AI-generated answers (save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md).
 
 1. Bundle vs standalone analysis — which products are stronger together?
-2. Run verified web research for competitor pricing (exact tiers, not estimates). Use Perplexity to find the pricing page URLs, then WebFetch each page for verbatim tier/price data.
+2. Run verified web research for competitor pricing (exact tiers, not estimates). Use Perplexity to find the pricing page URLs, then WebFetch each page for verbatim tier/price data (save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md).
 3. Design ascension path (entry → mid → premium → managed)
 4. Pricing: setup + monthly (never just one-time, per `/ai-service-designer` rules)
 5. Contrast principle: bundle price < sum of individual products
 6. **Output:** Tiered bundle structure + pricing + competitor benchmark table + ascension path
-7. **Gate:** Every price point validated against 2+ competitor benchmarks via verified web research.
+7. **Gate:** Every price point validated against 2+ competitor benchmarks via verified web research. Counts feed from `evidence/evidence.md` ledger entries with `[E:S#]` tags, not from agent recall. `[A]` (assumption) entries don't count.
 8. **Weak-signal handling.** If a price point has only ONE competitor benchmark, that is weak signal — not a gate pass. Weak signal REQUIRES all of: (a) run all five hidden-pricing discovery techniques from `reference/pricing-benchmarks.md` Section 3, (b) enter the weak-signal pricing into the Phase 7 risk register, (c) schedule a 90-day pricing re-evaluation based on close-rate / churn signals, (d) tighten the Phase 11 validation ramp (more customers, smaller price steps). Proceeding to Phase 6 on one benchmark WITHOUT completing a-d fails the gate.
 
 **Deep-dive support:** [`reference/pricing-benchmarks.md`](reference/pricing-benchmarks.md) covers the full research protocol, hidden-pricing discovery techniques (G2 review mining, team-size proxies, investor leaks), tier-spacing rules (3-4× multiplier), guarantee design, and the pass/weak/fail patterns for the 2-benchmark validation rule.
@@ -180,7 +205,7 @@ Define distinct products from validated pain. **Requires Phase 2 (integration) c
 4. Scaling bottlenecks (support per customer, ops overhead, single points of failure)
 5. For EACH risk: likelihood (H/M/L), impact (H/M/L), mitigation, trigger signal
 6. **Output:** Risk register + moat analysis + mitigation plan
-7. **Gate:** Every identified risk has a documented mitigation. Any H/H risk without mitigation = **STOP.**
+7. **Gate:** Every identified risk has a documented mitigation. Any H/H risk without mitigation = **STOP.** Counts feed from `evidence/evidence.md` ledger entries with `[E:S#]` tags, not from agent recall. `[A]` (assumption) entries don't count.
 8. **Concrete next steps:** [specific actions to reduce top 3 risks]
 
 ---
@@ -237,7 +262,7 @@ Define distinct products from validated pain. **Requires Phase 2 (integration) c
 6. **Kill criteria format — MANDATORY.** Every kill criterion must contain: **(a)** a target count of calls or participants (e.g., "10 calls"), **(b)** a numeric count threshold (e.g., "≥4 of 10"), **(c)** a single binary outcome per threshold (e.g., "willingness to pay $249+/mo"). Fuzzy quantifiers are rejected: no "some", "most", "moderate", "a few", "strong tone", "genuine interest", "open to the idea". If you cannot write a kill criterion with a count, a threshold, and a binary outcome, you have not defined a kill criterion — you have defined a hope. Phase 12 step 3 checks this explicitly.
 7. **CONDITIONAL verdict:** If validation returns split signal — problem confirmed but pricing or target-segment unclear — do NOT force a binary GO/KILL. Return CONDITIONAL with a specific, bounded next action (e.g., "5 more calls in the X segment"). See `reference/vertical-playbooks.md` Example 3 for the pattern.
 8. **Output:** Validation plan + outreach script + pricing ramp schedule + kill criteria + timeline
-9. **Gate:** GO/NO-GO/CONDITIONAL criteria defined with specific numbers (count + threshold + binary outcome per step 6). Pricing ramp schedule includes starting price and increment plan. Human executes validation.
+9. **Gate:** GO/NO-GO/CONDITIONAL criteria defined with specific numbers (count + threshold + binary outcome per step 6). Pricing ramp schedule includes starting price and increment plan. Human executes validation. Counts feed from `evidence/evidence.md` ledger entries with `[E:S#]` tags, not from agent recall. `[A]` (assumption) entries don't count.
 
 ---
 
@@ -253,7 +278,7 @@ Define distinct products from validated pain. **Requires Phase 2 (integration) c
 8. Check: **Phase 2 Integration Viability** — verified write access path for platforms covering >50% of the addressable market AS DEFINED IN PHASE 1. Do not redefine the addressable market in Phase 12 to dodge the gate. If not verified, flag as gap and send back to Phase 2.
 9. **Verify Phase 11 was EXECUTED, not just designed.** Kill criteria on paper do not count. Confirm validation calls happened: dates, participant initials or first-names, brief call notes, close-rate or willingness-to-pay signal per call. A Phase 11 verdict with no execution log = FAIL. Send back to Phase 11 for actual execution. The skill designs validation; the human executes it; Phase 12 verifies it happened.
 10. **Output:** Verification checklist + gaps found + Phase 11 execution log confirmation + FINAL GO/NO-GO/CONDITIONAL recommendation
-11. **Gate:** All 11 prior phases GREEN AND Phase 11 execution verified. Any gap = flag and send back to that phase.
+11. **Gate:** All 11 prior phases GREEN AND Phase 11 execution verified. Any gap = flag and send back to that phase. Counts feed from `evidence/evidence.md` ledger entries with `[E:S#]` tags, not from agent recall. `[A]` (assumption) entries don't count.
 
 ---
 

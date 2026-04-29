@@ -1,6 +1,8 @@
 # Pricing Benchmarks — Reference for Phase 5
 
-This file extends Phase 5 "Bundle Strategy" in SKILL.md. The core rule is simple: no price point ships without at least two competitor benchmarks pulled directly from the source. Perplexity finds candidate URLs; WebFetch reads verbatim tier and price data; AI-generated summaries are never a valid source. One benchmark is a weak signal. Zero is a guess. The sections below cover how to run the research, what to record, how to design tiers and guarantees, and how to validate that the numbers survive contact with reality.
+This file extends Phase 5 "Bundle Strategy" in SKILL.md. The core rule is simple: no price point ships without at least two competitor benchmarks pulled directly from the source. Perplexity finds candidate URLs; WebFetch reads verbatim tier and price data (save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md); AI-generated summaries are never a valid source. One benchmark is a weak signal. Zero is a guess. The sections below cover how to run the research, what to record, how to design tiers and guarantees, and how to validate that the numbers survive contact with reality.
+
+**Methodology note — evidence-ledger discipline.** Every specific pricing benchmark cited in a Phase 5 deliverable must trace to a fetched-and-grep-verified source via a `[E:S#]` Source-number tag in the evidence ledger. A benchmark without `[E:S#]` is treated as an assumption (`[A]`) and does not count toward the 2-benchmark gate. Apply this end-to-end: Section 1 research protocol, Section 2 verbatim extraction, Section 3 hidden-pricing techniques, Section 5 pass/weak/fail validation, Section 8 checklist — every claim ties back to a ledger row.
 
 ---
 
@@ -8,8 +10,8 @@ This file extends Phase 5 "Bundle Strategy" in SKILL.md. The core rule is simple
 
 Run this for every direct substitute and for two to three adjacent alternatives. Budget 20–30 minutes per competitor.
 
-1. **Find the pricing page via search.** Queries that work: `"[competitor name]" pricing`, `"[competitor name]" plans`, `"[competitor name]" site:/pricing`, `[competitor name] pricing 2026`. Perplexity is good for URL discovery — ignore its summary, grab the source link.
-2. **WebFetch the URL directly.** Do not paraphrase the AI summary. If WebFetch returns a login wall or paywall, use one of the hidden-pricing techniques in Section 3.
+1. **Find the pricing page via search.** Queries that work: `"[competitor name]" pricing`, `"[competitor name]" plans`, `"[competitor name]" site:/pricing`, `[competitor name] pricing 2026`. Perplexity is good for URL discovery — ignore its summary, grab the source link (save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md).
+2. **WebFetch the URL directly.** Do not paraphrase the AI summary. If WebFetch returns a login wall or paywall, use one of the hidden-pricing techniques in Section 3 (save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md).
 3. **Extract verbatim** — tier names, monthly price, annual price, per-seat price, usage caps, seat minimums, add-on prices, trial length.
 4. **Capture what's INCLUDED** at each tier, not only the dollar figure. Feature gates determine positioning; price alone misleads.
 5. **Flag "Contact sales" tiers.** Any enterprise or custom-priced tier is a hidden-pricing problem — apply Section 3.
@@ -104,9 +106,9 @@ Standard annual discount: **15–20% off the monthly rate**. Less than 15% and t
 
 ## 5. Price-Point Validation
 
-**The rule:** every price point in the bundle documents ≥2 competitor benchmarks via WebFetch with verbatim URLs and tiers.
+**The rule:** every price point in the bundle documents ≥2 competitor benchmarks via WebFetch with verbatim URLs and tiers (save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md).
 
-**Pass example.** You price the mid-tier bundle at $497/mo. Competitor A's "Growth" plan is $449/mo (WebFetched, dated this week). Competitor B's "Professional" plan is $599/mo (WebFetched, dated this week). Your price sits between two verified anchors — valid.
+**Pass example.** You price the mid-tier bundle at $497/mo. Competitor A's "Growth" plan is $449/mo (WebFetched, dated this week — save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md). Competitor B's "Professional" plan is $599/mo (WebFetched, dated this week — save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md). Your price sits between two verified anchors — valid.
 
 **Weak-signal example.** You price at $497/mo. Only one competitor publishes ($449/mo); every other competitor uses "Contact sales". Status: weak signal, not invalid. Apply Section 3 to close the gap before locking pricing. If you ship on one benchmark you're pricing against a single data point — a bad customer meeting can move your price more than market reality.
 
@@ -156,7 +158,7 @@ Back-solve to the price: if CAC is $600 and margin is 50%, a $100/mo product nee
 
 ## 8. Quick Checklist — before declaring Phase 5 complete
 
-- [ ] Every price point has ≥2 competitor benchmarks from verbatim WebFetch (URL + date captured)
+- [ ] Every price point has ≥2 competitor benchmarks from verbatim WebFetch (URL + date captured — save raw to evidence/raw/, then grep-verify per reference/evidence-ledger-protocol.md)
 - [ ] Tier spacing is 3–4× between adjacent tiers (or documented exception with rationale)
 - [ ] Setup-fee posture matches the business model per Section 4 table
 - [ ] Guarantee is either conditional-outcome, unconditional (with ticket + window floor), or explicit anti-guarantee
