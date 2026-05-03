@@ -13,8 +13,11 @@ Each skill is a Claude Code slash command. Install the ones you want, invoke the
 ## Install
 
 1. Clone this repo anywhere on your machine.
-2. Copy or symlink the skills you want into your Claude Code skills directory (`~/.claude/skills/`). Each skill is a self-contained subdirectory.
-3. Restart Claude Code.
+2. Copy or symlink the skills you want into your skills directory:
+   - **Claude Code** — copy from `claude/skills/` into `~/.claude/skills/`.
+   - **Codex** — copy from `codex/skills/` into `~/.codex/skills/`.
+   Each skill is a self-contained subdirectory.
+3. Restart your CLI.
 4. Invoke via slash commands — `/market-pain`, `/validate-opportunity`, etc.
 
 ## Weekly release roadmap

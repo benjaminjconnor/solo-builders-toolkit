@@ -1,0 +1,4 @@
+﻿display_name: "Ai Service Designer"
+short_description: "Use when identifying AI automation opportunities for a client business, designing new AI service offerings, scoping a client engagement, or productising an existing service. Tri..."
+default_prompt: "Use the ai-service-designer skill to help with this task. Follow its Codex usage notes, load references only as needed, and preserve evidence gates."
+

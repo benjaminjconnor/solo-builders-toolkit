@@ -1,0 +1,4 @@
+﻿display_name: "Product Strategy"
+short_description: "Use when taking a validated vertical from market research through to build plan. Triggers on \"product strategy\", \"vertical deep dive\", \"build plan for [industry]\", \"bundle strat..."
+default_prompt: "Use the product-strategy skill to help with this task. Follow its Codex usage notes, load references only as needed, and preserve evidence gates."
+

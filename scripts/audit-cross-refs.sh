@@ -14,10 +14,10 @@
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-SKILLS_DIR="$REPO_ROOT/skills"
+SKILLS_DIR="$REPO_ROOT/claude/skills"
 
 if [[ ! -d "$SKILLS_DIR" ]]; then
-  echo "ERROR: skills/ directory not found at $SKILLS_DIR" >&2
+  echo "ERROR: claude/skills/ directory not found at $SKILLS_DIR" >&2
   exit 2
 fi
 
@@ -70,14 +70,14 @@ fi
 echo ""
 echo "=== Evidence Ledger Protocol coverage + integrity ==="
 
-CANONICAL="skills/market-pain/reference/evidence-ledger-protocol.md"
+CANONICAL="claude/skills/market-pain/reference/evidence-ledger-protocol.md"
 if [ ! -f "$CANONICAL" ]; then
     echo "FAIL: canonical protocol missing at $CANONICAL" >&2
     exit 1
 fi
 
 LEDGER_VIOLATIONS=0
-for skill_dir in skills/*/; do
+for skill_dir in claude/skills/*/; do
     skill_name=$(basename "$skill_dir")
     skill_md="$skill_dir/SKILL.md"
     [ -f "$skill_md" ] || continue

@@ -1,0 +1,4 @@
+﻿display_name: "Market Pain"
+short_description: "Use when researching a new industry vertical before building any product, demo, or outreach campaign. Triggers on \"research [industry]\", \"validate market\", \"find pain points\", \"..."
+default_prompt: "Use the market-pain skill to help with this task. Follow its Codex usage notes, load references only as needed, and preserve evidence gates."
+

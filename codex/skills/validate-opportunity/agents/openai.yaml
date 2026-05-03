@@ -1,0 +1,4 @@
+﻿display_name: "Validate Opportunity"
+short_description: "Use when you have a raw business idea for a specific industry + geography and need to decide whether to build it. Triggers on \"validate opportunity\", \"validate this idea\", \"shou..."
+default_prompt: "Use the validate-opportunity skill to help with this task. Follow its Codex usage notes, load references only as needed, and preserve evidence gates."
+
