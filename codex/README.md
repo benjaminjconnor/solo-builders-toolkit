@@ -1,6 +1,6 @@
 ﻿# Solo Builder's Toolkit for Codex
 
-This folder contains Codex-optimized copies of the Claude-oriented skills in the root `skills/` folder and the staged future-week skills.
+This folder contains Codex-optimized copies of the Claude-oriented skills in the `claude/skills/` folder and the staged future-week skills.
 
 ## Layout
 
