@@ -10,3 +10,25 @@ Thumbs.db
 
 # Local-only
 HANDOFF-RESULTS.md
+
+# Claude Code per-repo settings (permissions, hooks, etc.) — local only.
+.claude/
+
+# Unreleased Codex skills staged from the future-weeks workspace.
+# These live on disk for the maintainer to copy into codex/skills/ as each
+# weekly bundle ships. They MUST NOT be published to the public repo until
+# their release week — publishing future-week skills early is the same
+# defect that prompted scripts/audit-cross-refs.sh to exist.
+#
+# Weekly release flow (Codex side):
+#   1. Maintainer copies week-N skills from codex/future-weeks/skills/
+#      into codex/skills/ (keep the future-weeks copy too).
+#   2. Run `bash scripts/audit-cross-refs.sh` against claude/skills/.
+#   3. Run `pwsh scripts/validate-codex-skills.ps1` against codex/skills/.
+#   4. Commit the codex/skills/<new-skill>/ additions only. Never use
+#      `git add -f codex/future-weeks/` — that re-introduces the leak.
+#
+# Mirror behaviour: the Claude side keeps its unreleased weeks in the
+# sibling workspace `solo-builders-toolkit-future-weeks/skills/`, also
+# outside the published repo, by the same logic.
+codex/future-weeks/
